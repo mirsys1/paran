@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>파란여행 퀘벡 맛집 가이드</title>
+
+  <!-- Leaflet.js for map -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      padding-bottom: 80px; /* space for bottom nav */
+    }
+
+    /* ── Sticky Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: #fff;
+      border-bottom: 1px solid #e8eaf0;
+      text-align: center;
+      padding: 14px 16px;
+    }
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #2563eb;
+      letter-spacing: -.01em;
+    }
+
+    /* ── Main Container ── */
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 16px 0;
+    }
+
+    /* ── Hero Banner ── */
+    .hero {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 28px;
+    }
+    .hero h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: .88rem;
+      color: rgba(255,255,255,.85);
+      line-height: 1.6;
+    }
+
+    /* ── Section Title ── */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 24px 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #2563eb;
+    }
+
+    /* ── Restaurant Card ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+
+    /* Image area */
+    .card-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      background: #dde3ee;
+    }
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Fallback emoji for missing images */
+    .card-img-wrap .img-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      background: linear-gradient(135deg, #dde3ee, #c8d3e8);
+    }
+    .rating-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      border-radius: 100px;
+      padding: 5px 10px;
+      font-size: .82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .rating-badge .star { color: #fbbf24; }
+
+    /* Card body */
+    .card-body { padding: 16px; }
+    .card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+    .card-tag {
+      display: inline-block;
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+      border-radius: 100px;
+      padding: 3px 12px;
+      font-size: .75rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .card-hours {
+      font-size: .82rem;
+      color: #6b7280;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .card-hours-icon { flex-shrink: 0; margin-top: 1px; }
+
+    /* Description box */
+    .card-desc {
+      background: #f8faff;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: .82rem;
+      color: #374151;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    /* Address link */
+    .card-addr-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f0f4ff;
+      border: 1.5px solid #c7d6ff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: #1a3a8f;
+      font-size: .84rem;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .card-addr-link:hover { background: #dce8ff; }
+    .card-addr-link .addr-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .addr-pin { color: #3b82f6; font-size: 1rem; }
+    .addr-chevron { color: #93c5fd; font-size: 1rem; }
+
+    /* ── Market Card (special) ── */
+    .card.market .card-addr-link {
+      background: #fffbf0;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+    .card.market .card-addr-link:hover { background: #fef3c7; }
+
+    /* ══════════════════════════════
+       MAP SECTION
+    ══════════════════════════════ */
+    #map-section { padding-bottom: 8px; }
+
+    #map-section .map-desc {
+      font-size: .83rem;
+      color: #6b7280;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    #map {
+      width: 100%;
+      height: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.10);
+      margin-bottom: 20px;
+      border: 1.5px solid #e0e7ff;
+    }
+
+    /* Map legend */
+    .map-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      color: #374151;
+      font-weight: 500;
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-dot.upper { background: #2563eb; }
+    .legend-dot.lower { background: #16a34a; }
+
+    /* Map restaurant list */
+    .map-list { margin-top: 4px; }
+    .map-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      text-decoration: none;
+      color: inherit;
+    }
+    .map-list-item:last-child { border-bottom: none; }
+    .map-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .map-num.upper { background: #2563eb; }
+    .map-num.lower { background: #16a34a; }
+    .map-info { flex: 1; }
+    .map-rname { font-size: .88rem; font-weight: 600; color: #1a1a2e; }
+    .map-raddr { font-size: .76rem; color: #9ca3af; margin-top: 1px; }
+    .map-list-chevron { color: #cbd5e1; font-size: .9rem; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 20px 16px 8px;
+      font-size: .75rem;
+      color: #9ca3af;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 300;
+      background: #fff;
+      border-top: 1px solid #e8eaf0;
+      display: flex;
+      justify-content: space-around;
+      align-items: stretch;
+      height: 64px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      text-decoration: none;
+      color: #9ca3af;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: color .15s;
+      padding: 0;
+    }
+    .nav-item.active, .nav-item:hover { color: #2563eb; }
+    .nav-item svg { transition: transform .15s; }
+    .nav-item.active svg { transform: scale(1.1); }
+    .nav-icon { font-size: 1.3rem; line-height: 1; }
+
+    /* Section visibility control */
+    .page-section { display: block; }
+    .page-section.hidden { display: none; }
+
+    /* ── Image Slider ── */
+    .slider-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;  /* 가로형(16:9) 이미지에 맞게 비율 자동 조정 */
+      overflow: hidden;
+      background: #1a1a1a;
+      touch-action: pan-y;
+    }
+    .slider-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.55s cubic-bezier(0.4, 0.0, 0.2, 1);
+      will-change: transform;
+    }
+    .slider-track img {
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;     /* 16:9 비율로 꽉 채워 보여줌 */
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    /* Dot indicators */
+    .slider-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .slider-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.55);
+      border: 1.5px solid rgba(255,255,255,0.8);
+      transition: background 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+    .slider-dot.active {
+      background: #fff;
+      transform: scale(1.25);
+    }
+    /* Arrow buttons */
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0,0,0,0.38);
+      backdrop-filter: blur(4px);
+      border: none;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+      padding: 0;
+    }
+    .slider-btn:hover { background: rgba(0,0,0,0.6); }
+    .slider-btn.prev { left: 10px; }
+    .slider-btn.next { right: 10px; }
+    /* Photo count badge */
+    .photo-count {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 600;
+      border-radius: 100px;
+      padding: 3px 9px;
+      z-index: 10;
+      letter-spacing: .02em;
+    }
+
+    /* Leaflet popup custom */
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15) !important;
+    }
+    .popup-name { font-weight: 700; font-size: .9rem; color: #1a1a2e; margin-bottom: 4px; }
+    .popup-tag { font-size: .75rem; color: #c2410c; margin-bottom: 6px; }
+    .popup-addr { font-size: .75rem; color: #6b7280; margin-bottom: 8px; }
+    .popup-btn {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-size: .73rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ STICKY HEADER ═══ -->
+<header>
+  <h1>🍁 파란여행 퀘벡 맛집</h1>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+  <!-- ── HOME / HERO ── -->
+  <section class="page-section" id="sec-home">
+
+    <div class="hero">
+      <h2>Bonjour!<br>퀘벡 최고의 맛</h2>
+      <p>파란여행이 엄선한 아름다운 퀘벡 시티의<br>진정한 로컬 맛집 가이드</p>
+    </div>
+
+    <!-- Upper Town -->
+    <div class="section-title">🏰 Upper Town</div>
+
+    <!-- 1 -->
+    <div class="card">
+      <!-- ── Le Beffroi Image Slider ── -->
+      <div class="slider-wrap" id="slider-beffroi"
+           data-index="0"
+           data-startx="0"
+           data-dragging="false">
+        <div class="slider-track" id="slider-track-beffroi">
+          <img src="이미지/Webp/LeBeffroi_web_1.webp" alt="Le Beffroi Steak House 1" loading="lazy" draggable="false"/>
+          <img src="이미지/Webp/LeBeffroi_web_2.webp" alt="Le Beffroi Steak House 2" loading="lazy" draggable="false"/>
+          <img src="이미지/Webp/LeBeffroi_web_3.webp" alt="Le Beffroi Steak House 3" loading="lazy" draggable="false"/>
+        </div>
+        <!-- Arrows -->
+        <button class="slider-btn prev" onclick="sliderMove('beffroi',-1)" aria-label="이전 사진">&#8249;</button>
+        <button class="slider-btn next" onclick="sliderMove('beffroi', 1)" aria-label="다음 사진">&#8250;</button>
+        <!-- Dots -->
+        <div class="slider-dots" id="slider-dots-beffroi">
+          <div class="slider-dot active" onclick="sliderGoTo('beffroi',0)"></div>
+          <div class="slider-dot"        onclick="sliderGoTo('beffroi',1)"></div>
+          <div class="slider-dot"        onclick="sliderGoTo('beffroi',2)"></div>
+        </div>
+        <!-- Photo count -->
+        <div class="photo-count" id="slider-count-beffroi">📷 1 / 3</div>
+        <!-- Rating badge -->
+        <div class="rating-badge"><span class="star">★</span> 4.8</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Le Beffroi Steak House</div>
+        <span class="card-tag">스테이크/그릴</span>
+        <div class="card-hours">
+          <span class="card-hours-icon">🕐</span>
+          월-목,일 07:00-21:00 / 금,토 07:00-22:00
+        </div>
+        <div class="card-desc">
+          St-Jean 성문 바로 앞에 위치하여 Old Quebec에서 가장 유명한 정통 스테이크 전문점입니다. 1층과 지하로 이루어진 고급스러운 내부에 2,500병 이상의 와인을 보관하는 대형 와인 쿨러를 갖추고 있습니다. 특히 퀘벡 특산물인 단풍나무 숯을 사용해 은은한 향을 입혀 구워낸 최상급 알버타산 AAA 안심 스테이크(Filet Mignon)는 강력 추천 메뉴입니다.
+        </div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=775+Av.+Honoré-Mercier+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 775 Av. Honoré-Mercier / 418-380-2638</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80" alt="프렌치" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🇫🇷</div>
+        <div class="rating-badge"><span class="star">★</span> 4.6</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Cochon Dingue — Rue Saint-Jean</div>
+        <span class="card-tag">프렌치</span>
+        <div class="card-hours">🕐 월-수,일 07:30-21:00 / 목-토 07:30-22:00</div>
+        <div class="card-desc">전 세계 여행객들에게 소개된 퀘벡에서 가장 인기 있는 '미친 돼지' 식당의 St-Jean 분점입니다. 로워 타운 본점에 비해 호텔 밀집 지역에서 도보로 이동하기가 매우 편리합니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=1014+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 1014 Rue Saint-Jean / 418-523-2013</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80" alt="크레페" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🥞</div>
+        <div class="rating-badge"><span class="star">★</span> 4.5</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Au Petit Coin Breton</div>
+        <span class="card-tag">프렌치/그라탕</span>
+        <div class="card-hours">🕐 월-목,일 08:00-21:00 / 금,토 08:00-22:00</div>
+        <div class="card-desc">1963년부터 3대째 이어져 온 명소로, 직접 만든 비법 소스의 샐러드와 푸짐한 그라탕이 유명합니다. 식사용 갈레트와 달콤한 디저트용 크레페가 다양하게 준비되어 있어 한 끼 식사로 완벽합니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=1029+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 1029 Rue Saint-Jean / 418-694-0758</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=600&q=80" alt="펍" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍺</div>
+        <div class="rating-badge"><span class="star">★</span> 4.7</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Pub Saint-Alexandre</div>
+        <span class="card-tag">펍/바</span>
+        <div class="card-hours">🕐 매일 11:00–00:00</div>
+        <div class="card-desc">1946년에 문을 연 유서 깊은 곳으로, 약 250여 종의 방대한 맥주 리스트와 함께 Jazz &amp; Blues 라이브 음악을 즐길 수 있어 "The Best Pub in Town"이라는 별명을 가진 명소입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=1087+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 1087 Rue Saint-Jean / 418-694-0015</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt="카페" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">☕</div>
+        <div class="rating-badge"><span class="star">★</span> 4.8</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Paillard St-Jean</div>
+        <span class="card-tag">카페/베이커리</span>
+        <div class="card-hours">🕐 월-수 06:00-18:00 / 목-일 06:00-19:00</div>
+        <div class="card-desc">프랑스식 정통 베이커리로 겉바속촉 크루아상, 마카롱, 다양한 샌드위치가 일품입니다. 넓은 매장에서 커피 한 잔의 여유를 즐기기에 가장 좋은 장소입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=1097+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 1097 Rue Saint-Jean / 418-692-1221</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="파인다이닝" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍽️</div>
+        <div class="rating-badge"><span class="star">★</span> 4.9</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Chez Boulay Bistro Boréal</div>
+        <span class="card-tag">프렌치 파인다이닝</span>
+        <div class="card-hours">🕐 월,화 17:00-21:45 / 수-일 11:30-14:00, 17:00-21:45</div>
+        <div class="card-desc">두 스타 셰프가 운영하는 인기 파인다이닝입니다. 민물고기(Walleye), 가리비 요리, 소고기 볼살 요리가 대표적이며 디저트로 메이플 크렘브륄레를 추천합니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=1110+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 1110 Rue Saint-Jean / 418-380-8166</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1519676867240-f03562e64548?w=600&q=80" alt="크레페" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🥞</div>
+        <div class="rating-badge"><span class="star">★</span> 4.4</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Le Casse-Crêpe Breton</div>
+        <span class="card-tag">크레페 전문점</span>
+        <div class="card-hours">🕐 매일 07:30–22:30</div>
+        <div class="card-desc">가성비 좋은 크레페 전문점으로, 아일랜드 주방에서 조리 과정을 직접 볼 수 있습니다. 바삭한 메밀(Buckwheat) 크레페가 특히 인기가 많습니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=1136+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 1136 Rue Saint-Jean / 418-692-0438</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" alt="이탈리안" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍕</div>
+        <div class="rating-badge"><span class="star">★</span> 4.5</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Portofino</div>
+        <span class="card-tag">이탈리안</span>
+        <div class="card-hours">🕐 매일 11:00–22:00</div>
+        <div class="card-desc">화덕 피자와 수제 파스타가 맛있는 이탈리안 레스토랑입니다. 분위기 있는 실내와 라이브 공연이 식사의 즐거움을 더해줍니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=54+Rue+Couillard+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 54 Rue Couillard / 418-692-8888</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80" alt="프렌치전통" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🐌</div>
+        <div class="rating-badge"><span class="star">★</span> 4.3</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Restaurant 1640</div>
+        <span class="card-tag">프렌치 전통</span>
+        <div class="card-hours">🕐 매일 08:30–21:00</div>
+        <div class="card-desc">유서 깊은 건물에서 달팽이 요리, 오리 다리 요리 등 정통 프렌치를 즐길 수 있습니다. 메이플 시럽을 곁들인 크렘브륄레가 유명합니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=16+Rue+Sainte-Anne+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 16 Rue Sainte-Anne / 418-694-9063</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="버거" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍔</div>
+        <div class="rating-badge"><span class="star">★</span> 4.5</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Le Chic Shack</div>
+        <span class="card-tag">수제버거/푸틴</span>
+        <div class="card-hours">🕐 매일 08:00–21:00</div>
+        <div class="card-desc">항상 줄이 긴 퀘벡 최고의 수제 햄버거 맛집입니다. 쉑버거와 독특한 감자 요리인 푸틴, 라즈베리 에이드가 환상적입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=15+Rue+du+Fort+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 15 Rue du Fort / 418-692-1485</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80" alt="퀘벡전통" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍁</div>
+        <div class="rating-badge"><span class="star">★</span> 4.6</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Aux Anciens Canadiens</div>
+        <span class="card-tag">퀘벡 전통식</span>
+        <div class="card-hours">🕐 매일 12:00–22:30</div>
+        <div class="card-desc">1675년에 지어진 유서 깊은 건물에서 지역 전통 요리를 맛볼 수 있습니다. 특히 런치 코스가 가성비가 매우 좋습니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=34+Rue+Saint-Louis+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 34 Rue Saint-Louis / 418-692-1627</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 12 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80" alt="이탈리안프렌치" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🦞</div>
+        <div class="rating-badge"><span class="star">★</span> 4.4</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Parmesan</div>
+        <span class="card-tag">이탈리안/프렌치</span>
+        <div class="card-hours">🕐 월-금 11:30-22:00 / 토,일 11:00-22:00</div>
+        <div class="card-desc">기념일에 방문하기 좋은 흥겨운 곳입니다. 해산물 파스타, 프랑스식 찜요리, 랍스터 등을 연주와 함께 즐길 수 있습니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=38+Rue+Saint-Louis+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 38 Rue Saint-Louis / 418-692-0341</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&q=80" alt="퀘벡전통" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🦌</div>
+        <div class="rating-badge"><span class="star">★</span> 4.7</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Restaurant La Buche</div>
+        <span class="card-tag">퀘벡 전통식</span>
+        <div class="card-hours">🕐 월-수,일 08:00-21:30 / 목-토 08:00-22:00</div>
+        <div class="card-desc">사냥꾼 컨셉의 핫플레이스입니다. 퀘벡식 백반(Sugar Shack Plate)과 사슴고기 타르타르가 인기입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=49+Rue+Saint-Louis+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 49 Rue Saint-Louis / 418-694-7272</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 14 Market -->
+    <div class="card market">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80" alt="마켓" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🛒</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Marché Richelieu</div>
+        <span class="card-tag">대형 마켓</span>
+        <div class="card-hours">🕐 매일 08:00–21:00</div>
+        <div class="card-desc">올드 퀘벡 최대 마켓으로 로컬 맥주와 다양한 식료품을 구할 수 있어 숙소용 쇼핑에 최적입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=850+Rue+Saint-Jean+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 850 Rue Saint-Jean / 418-522-4889</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Lower Town -->
+    <div class="section-title">⚓ Lower Town</div>
+
+    <!-- 15 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80" alt="프렌치" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🐇</div>
+        <div class="rating-badge"><span class="star">★</span> 4.8</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Le Lapin Sauté</div>
+        <span class="card-tag">프렌치</span>
+        <div class="card-hours">🕐 월-금 11:00-21:00 / 토,일 10:00-21:00</div>
+        <div class="card-desc">로맨틱한 분위기의 토끼 요리 전문점입니다. 토끼고기와 오리 요리, 푸아그라 등 특별한 미식을 제공합니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=52+Rue+du+Petit+Champlain+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 52 Rue du Petit Champlain / 418-692-5325</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 16 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?w=600&q=80" alt="프렌치본점" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🐷</div>
+        <div class="rating-badge"><span class="star">★</span> 4.6</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Le Cochon Dingue — Champlain <small>(본점)</small></div>
+        <span class="card-tag">프렌치</span>
+        <div class="card-hours">🕐 매일 08:00–21:00</div>
+        <div class="card-desc">미친돼지 본점입니다. 단풍나무 훈연 폭립과 연어 타르타르가 일품인 퀘벡의 명소입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=46+Bd+Champlain+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 46 Bd Champlain / 418-692-2013</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 17 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&q=80" alt="비버테일" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍩</div>
+        <div class="rating-badge"><span class="star">★</span> 4.7</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Queues de Castor (Beaver Tail)</div>
+        <span class="card-tag">디저트</span>
+        <div class="card-hours">🕐 월-목,일 11:00-22:00 / 금,토 11:00-23:00</div>
+        <div class="card-desc">캐나다의 국민 간식 비버테일입니다. 바삭하게 튀긴 빵 위에 달콤한 토핑을 얹어 즐겨보세요.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=28+Boulevard+Champlain+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 28 Boulevard Champlain / 418-694-1444</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 18 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80" alt="펍" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍺</div>
+        <div class="rating-badge"><span class="star">★</span> 4.8</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Q-DE-SAC Resto Pub</div>
+        <span class="card-tag">펍/바</span>
+        <div class="card-hours">🕐 매일 11:30–21:30</div>
+        <div class="card-desc">화덕 요리 전문 펍입니다. 비프 치크 피자와 진한 어니언 수프 등 로컬 추천 메뉴를 즐겨보세요.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=10+Rue+du+Cul-de-Sac+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 10 Rue du Cul-de-Sac / 418-692-4862</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 19 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=600&q=80" alt="수제맥주" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">🍻</div>
+        <div class="rating-badge"><span class="star">★</span> 4.6</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Archibald Microbrasserie</div>
+        <span class="card-tag">수제 맥주 펍</span>
+        <div class="card-hours">🕐 월-목,일 10:30-21:30 / 금,토 10:30-22:00</div>
+        <div class="card-desc">금메달 에일과 부드러운 스타우트를 즐길 수 있는 수제 맥주 명소입니다. 훌륭한 휴식을 약속합니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=40+Rue+du+Marché-Champlain+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 40 Rue du Marché-Champlain / 418-694-9144</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 20 -->
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" alt="카페" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="img-fallback" style="display:none">☕</div>
+        <div class="rating-badge"><span class="star">★</span> 4.7</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">La Maison Smith</div>
+        <span class="card-tag">카페/베이커리</span>
+        <div class="card-hours">🕐 월-금,일 07:00-18:00 / 토 07:00-19:00</div>
+        <div class="card-desc">로얄 광장의 랜드마크 카페입니다. 라떼와 크루아상이 일품이며 원두 쇼핑에도 최적입니다.</div>
+        <a class="card-addr-link" href="https://www.google.com/maps/search/?api=1&query=23+Rue+Notre-Dame+Québec+QC" target="_blank">
+          <span class="addr-left"><span class="addr-pin">📍</span> 23 Rue Notre-Dame / 581-742-6777</span>
+          <span class="addr-chevron">›</span>
+        </a>
+      </div>
+    </div>
+
+    <footer>© 2026 Paran Travel · Quebec City Food Guide</footer>
+
+  </section><!-- /#sec-home -->
+
+  <!-- ══════════════════════════════
+       MAP SECTION
+  ══════════════════════════════ -->
+  <section class="page-section hidden" id="sec-map">
+    <div class="section-title">🗺️ 맛집 지도</div>
+    <p class="map-desc">퀘벡 시티 맛집 20곳의 위치를 한눈에 확인하세요. 마커를 클릭하면 상세 정보와 구글 지도 링크를 볼 수 있습니다.</p>
+
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot upper"></div> Upper Town (14)</div>
+      <div class="legend-item"><div class="legend-dot lower"></div> Lower Town (6)</div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Quick list under map -->
+    <div class="map-list" id="map-list"></div>
+
+    <footer>© 2026 Paran Travel · Quebec City Food Guide</footer>
+  </section>
+
+</main>
+
+<!-- ═══ BOTTOM NAVIGATION ═══ -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-home" onclick="showSection('home')">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="nav-item" id="nav-upper" onclick="scrollToSection('upper')">
+    <span class="nav-icon">🏰</span>
+    <span>Upper</span>
+  </button>
+  <button class="nav-item" id="nav-lower" onclick="scrollToSection('lower')">
+    <span class="nav-icon">⚓</span>
+    <span>Lower</span>
+  </button>
+  <button class="nav-item" id="nav-map" onclick="showSection('map')">
+    <span class="nav-icon">🗺️</span>
+    <span>지도</span>
+  </button>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Continuous Infinite Slider — RAF + User Drag/Swipe
+   ═══════════════════════════════════════════════════
+   동작 원리
+   - requestAnimationFrame 으로 매 프레임 pos 를 조금씩 이동
+   - 첫 번째 이미지를 track 끝에 복제 → 마지막→첫 번째 순간이동 없는 무한 루프
+   - 마우스 드래그 / 터치 스와이프 중에는 RAF 위치 업데이트를 건너뛰고
+     손가락·마우스가 직접 track 을 움직임
+   - 놓으면 현재 위치에서 자동 흐름 재개
+   ═══════════════════════════════════════════════════ */
+(function () {
+  var SPEED      = 100 / 16000;  /* % / ms  →  슬라이드 1장(100%)을 16초에 통과 */
+  var N          = 3;             /* 원본 이미지 수 */
+  var LOOP_RANGE = N * 100;       /* 300% : 이 값만큼 가면 처음 이미지로 복귀 */
+
+  function Slider(id) {
+    var wrap  = document.getElementById('slider-' + id);
+    var track = document.getElementById('slider-track-' + id);
+    var dots  = document.getElementById('slider-dots-' + id);
+    var count = document.getElementById('slider-count-' + id);
+    if (!wrap || !track) return;
+
+    /* 첫 이미지 복제 → track 뒤에 붙임 (무한 루프 처리) */
+    track.appendChild(track.children[0].cloneNode(true));
+    /* CSS transition 끄기 — RAF 가 직접 transform 제어 */
+    track.style.transition = 'none';
+
+    var pos          = 0;      /* 현재 오프셋(%) — 0 에서 음수 방향으로 진행 */
+    var lastTs       = null;   /* 이전 프레임 타임스탬프 */
+    var isDragging   = false;
+    var isUserCtrl   = false;
+    var dragStartX   = 0;
+    var dragStartY   = 0;
+    var dragStartPos = 0;
+    var lastDotIdx   = -1;
+
+    /* 0 ~ -LOOP_RANGE 범위로 pos 정규화 */
+    function normalize(p) {
+      p = p % LOOP_RANGE;
+      if (p > 0)             p -= LOOP_RANGE;
+      if (p <= -LOOP_RANGE)  p += LOOP_RANGE;
+      return p;
+    }
+
+    /* track 위치 적용 */
+    function applyPos(p) {
+      track.style.transform = 'translateX(' + p.toFixed(5) + '%)';
+    }
+
+    /* 점·카운터 업데이트 (변화가 있을 때만) */
+    function updateUI(p) {
+      /* 경계(복제 이미지) 영역에서 UI 튀는 것 방지 */
+      var raw = Math.floor(-p / 100);
+      var idx = raw % N;
+      if (idx < 0) idx += N;
+      if (idx === lastDotIdx) return;
+      lastDotIdx = idx;
+      if (dots) {
+        [].forEach.call(dots.children, function (d, i) {
+          d.classList.toggle('active', i === idx);
+        });
+      }
+      if (count) count.textContent = '📷 ' + (idx + 1) + ' / ' + N;
+    }
+
+    /* RAF 루프 */
+    function loop(ts) {
+      if (!isDragging && !isUserCtrl) {
+        var dt = (lastTs !== null) ? ts - lastTs : 0;
+        if (dt > 150) dt = 16; /* 탭 전환·백그라운드 등 이상 dt 보정 */
+        pos = normalize(pos - SPEED * dt);
+        applyPos(pos);
+        updateUI(pos);
+      }
+      lastTs = ts;
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    /* ── 마우스 드래그 ── */
+    wrap.addEventListener('mousedown', function (e) {
+      isDragging   = true;
+      isUserCtrl   = true;
+      dragStartX   = e.clientX;
+      dragStartPos = pos;
+      lastTs       = null;
+      e.preventDefault();
+    });
+
+    /* document 에서 받아야 슬라이더 밖으로 나가도 드래그 유지 */
+    document.addEventListener('mousemove', function (e) {
+      if (!isDragging) return;
+      var pct = (e.clientX - dragStartX) / wrap.offsetWidth * 100;
+      pos = normalize(dragStartPos + pct);
+      applyPos(pos);
+      updateUI(pos);
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!isDragging) return;
+      isDragging = false;
+      isUserCtrl = false;
+      lastTs     = null; /* 다음 프레임 dt = 0 으로 재시작 */
+    });
+
+    /* ── 터치 스와이프 ── */
+    wrap.addEventListener('touchstart', function (e) {
+      isDragging   = true;
+      isUserCtrl   = true;
+      dragStartX   = e.touches[0].clientX;
+      dragStartY   = e.touches[0].clientY;
+      dragStartPos = pos;
+      lastTs       = null;
+    }, { passive: true });
+
+    wrap.addEventListener('touchmove', function (e) {
+      if (!isDragging) return;
+      var dx = e.touches[0].clientX - dragStartX;
+      var dy = e.touches[0].clientY - dragStartY;
+      /* 수직 스크롤이 더 크면 페이지 스크롤 허용 후 드래그 해제 */
+      if (Math.abs(dy) > Math.abs(dx)) {
+        isDragging = false;
+        isUserCtrl = false;
+        lastTs     = null;
+        return;
+      }
+      e.preventDefault(); /* 수평 스와이프 중 페이지 스크롤 차단 */
+      var pct = dx / wrap.offsetWidth * 100;
+      pos = normalize(dragStartPos + pct);
+      applyPos(pos);
+      updateUI(pos);
+    }, { passive: false });
+
+    wrap.addEventListener('touchend',    release, { passive: true });
+    wrap.addEventListener('touchcancel', release, { passive: true });
+    function release() {
+      isDragging = false;
+      isUserCtrl = false;
+      lastTs     = null;
+    }
+
+    /* ── 버튼 / 점 클릭 시 특정 슬라이드로 이동 ── */
+    function goTo(idx) {
+      idx = ((idx % N) + N) % N;
+      isUserCtrl = true;
+      isDragging = false;
+      /* 부드러운 이동을 위해 짧은 transition 임시 적용 */
+      track.style.transition = 'transform 0.5s ease';
+      pos = -(idx * 100);
+      applyPos(pos);
+      updateUI(pos);
+      setTimeout(function () {
+        track.style.transition = 'none';
+        isUserCtrl = false;
+        lastTs     = null;
+      }, 520);
+    }
+
+    window._sliders        = window._sliders || {};
+    window._sliders[id]    = { goTo: goTo };
+  }
+
+  /* 전역 함수 — HTML onclick 에서 호출 */
+  window.sliderGoTo = function (id, idx) {
+    if (window._sliders[id]) window._sliders[id].goTo(idx);
+  };
+  window.sliderMove = function (id, dir) {
+    if (!window._sliders[id]) return;
+    /* 현재 가장 가까운 슬라이드 인덱스 계산 */
+    var wrap  = document.getElementById('slider-' + id);
+    var track = document.getElementById('slider-track-' + id);
+    var cur   = Math.round(parseFloat(track.style.transform.replace('translateX(','')) / -100);
+    window._sliders[id].goTo(cur + dir);
+  };
+
+  new Slider('beffroi');
+})();
+
+/* ─── Restaurant Data ─── */
+const restaurants = [
+  // Upper Town
+  { id:1, zone:'upper', name:'Le Beffroi Steak House', tag:'스테이크/그릴', addr:'775 Av. Honoré-Mercier', phone:'418-380-2638', lat:46.8122, lng:-71.2134 },
+  { id:2, zone:'upper', name:'Cochon Dingue — St-Jean', tag:'프렌치', addr:'1014 Rue Saint-Jean', phone:'418-523-2013', lat:46.8118, lng:-71.2128 },
+  { id:3, zone:'upper', name:'Au Petit Coin Breton', tag:'프렌치/그라탕', addr:'1029 Rue Saint-Jean', phone:'418-694-0758', lat:46.8117, lng:-71.2126 },
+  { id:4, zone:'upper', name:'Pub Saint-Alexandre', tag:'펍/바', addr:'1087 Rue Saint-Jean', phone:'418-694-0015', lat:46.8115, lng:-71.2119 },
+  { id:5, zone:'upper', name:'Paillard St-Jean', tag:'카페/베이커리', addr:'1097 Rue Saint-Jean', phone:'418-692-1221', lat:46.8114, lng:-71.2117 },
+  { id:6, zone:'upper', name:'Chez Boulay Bistro Boréal', tag:'프렌치 파인다이닝', addr:'1110 Rue Saint-Jean', phone:'418-380-8166', lat:46.8113, lng:-71.2115 },
+  { id:7, zone:'upper', name:'Le Casse-Crêpe Breton', tag:'크레페 전문점', addr:'1136 Rue Saint-Jean', phone:'418-692-0438', lat:46.8111, lng:-71.2112 },
+  { id:8, zone:'upper', name:'Portofino', tag:'이탈리안', addr:'54 Rue Couillard', phone:'418-692-8888', lat:46.8134, lng:-71.2078 },
+  { id:9, zone:'upper', name:'Restaurant 1640', tag:'프렌치 전통', addr:'16 Rue Sainte-Anne', phone:'418-694-9063', lat:46.8128, lng:-71.2088 },
+  { id:10, zone:'upper', name:'Le Chic Shack', tag:'수제버거/푸틴', addr:'15 Rue du Fort', phone:'418-692-1485', lat:46.8121, lng:-71.2079 },
+  { id:11, zone:'upper', name:'Aux Anciens Canadiens', tag:'퀘벡 전통식', addr:'34 Rue Saint-Louis', phone:'418-692-1627', lat:46.8116, lng:-71.2072 },
+  { id:12, zone:'upper', name:'Parmesan', tag:'이탈리안/프렌치', addr:'38 Rue Saint-Louis', phone:'418-692-0341', lat:46.8115, lng:-71.2070 },
+  { id:13, zone:'upper', name:'Restaurant La Buche', tag:'퀘벡 전통식', addr:'49 Rue Saint-Louis', phone:'418-694-7272', lat:46.8113, lng:-71.2067 },
+  { id:14, zone:'upper', name:'Marché Richelieu', tag:'대형 마켓', addr:'850 Rue Saint-Jean', phone:'418-522-4889', lat:46.8109, lng:-71.2141 },
+  // Lower Town
+  { id:15, zone:'lower', name:'Le Lapin Sauté', tag:'프렌치', addr:'52 Rue du Petit Champlain', phone:'418-692-5325', lat:46.8093, lng:-71.2037 },
+  { id:16, zone:'lower', name:'Le Cochon Dingue (본점)', tag:'프렌치', addr:'46 Bd Champlain', phone:'418-692-2013', lat:46.8086, lng:-71.2040 },
+  { id:17, zone:'lower', name:'Queues de Castor', tag:'디저트', addr:'28 Boulevard Champlain', phone:'418-694-1444', lat:46.8083, lng:-71.2043 },
+  { id:18, zone:'lower', name:'Q-DE-SAC Resto Pub', tag:'펍/바', addr:'10 Rue du Cul-de-Sac', phone:'418-692-4862', lat:46.8090, lng:-71.2048 },
+  { id:19, zone:'lower', name:'Archibald Microbrasserie', tag:'수제 맥주 펍', addr:'40 Rue du Marché-Champlain', phone:'418-694-9144', lat:46.8088, lng:-71.2025 },
+  { id:20, zone:'lower', name:'La Maison Smith', tag:'카페/베이커리', addr:'23 Rue Notre-Dame', phone:'581-742-6777', lat:46.8096, lng:-71.2058 },
+];
+
+/* ─── Section switching ─── */
+let mapInitialized = false;
+
+function showSection(name) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById('sec-' + name).classList.remove('hidden');
+  document.getElementById('nav-' + name).classList.add('active');
+
+  if (name === 'map' && !mapInitialized) {
+    initMap();
+    mapInitialized = true;
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToSection(zone) {
+  // If currently on map section, switch to home first
+  const homeSection = document.getElementById('sec-home');
+  if (homeSection.classList.contains('hidden')) {
+    showSection('home');
+    setTimeout(() => doScroll(zone), 300);
+  } else {
+    doScroll(zone);
+  }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('nav-' + zone).classList.add('active');
+}
+
+function doScroll(zone) {
+  const titles = document.querySelectorAll('.section-title');
+  const target = zone === 'upper' ? titles[0] : titles[1];
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ─── Leaflet Map ─── */
+function initMap() {
+  const map = L.map('map', { zoomControl: true }).setView([46.8105, -71.208], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19
+  }).addTo(map);
+
+  function makeIcon(color) {
+    return L.divIcon({
+      className: '',
+      html: `<div style="width:28px;height:28px;border-radius:50% 50% 50% 0;background:${color};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transform:rotate(-45deg)"></div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 28],
+      popupAnchor: [0, -30]
+    });
+  }
+
+  const upperIcon = makeIcon('#2563eb');
+  const lowerIcon = makeIcon('#16a34a');
+
+  const listEl = document.getElementById('map-list');
+
+  restaurants.forEach((r, i) => {
+    const icon = r.zone === 'upper' ? upperIcon : lowerIcon;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.addr + ' Québec QC')}`;
+
+    const marker = L.marker([r.lat, r.lng], { icon })
+      .addTo(map)
+      .bindPopup(`
+        <div style="min-width:180px">
+          <div class="popup-name">${r.id}. ${r.name}</div>
+          <div class="popup-tag">${r.tag}</div>
+          <div class="popup-addr">📍 ${r.addr}<br>📞 ${r.phone}</div>
+          <a class="popup-btn" href="${mapsUrl}" target="_blank">Google Maps →</a>
+        </div>
+      `, { maxWidth: 240 });
+
+    // Build list item
+    const li = document.createElement('a');
+    li.className = 'map-list-item';
+    li.href = '#';
+    li.innerHTML = `
+      <div class="map-num ${r.zone}">${r.id}</div>
+      <div class="map-info">
+        <div class="map-rname">${r.name}</div>
+        <div class="map-raddr">${r.addr}</div>
+      </div>
+      <span class="map-list-chevron">›</span>
+    `;
+    li.addEventListener('click', e => {
+      e.preventDefault();
+      map.setView([r.lat, r.lng], 17, { animate: true });
+      marker.openPopup();
+      document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+    });
+    listEl.appendChild(li);
+  });
+}
+</script>
+</body>
+</html>
