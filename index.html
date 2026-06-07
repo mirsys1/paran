@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="파란여행 공식 투어 동행 가이드 — 버스 안에서도 관광지 앞에서도 설명을 놓치지 않는 여행">
+  <meta name="theme-color" content="#0B3D6B">
+  <meta property="og:title" content="Paran.ca | 파란여행 투어 가이드">
+  <meta property="og:description" content="현재 위치, 다음 목적지, 장소 설명을 한눈에 — 파란여행 모바일 동행 가이드">
+  <meta property="og:type" content="website">
+  <title>Paran.ca | 파란여행 투어 가이드</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#" aria-label="Paran.ca 홈">
+      <div class="brand-mark">P</div>
+      <span class="brand-name">Paran.ca</span>
+    </a>
+    <nav class="main-nav" aria-label="주요 메뉴">
+      <a href="#live" class="nav-link">투어 라이브</a>
+      <a href="#places" class="nav-link">장소 가이드</a>
+      <a href="#products" class="nav-link">상품</a>
+      <a href="#booking" class="nav-link">예약</a>
+    </nav>
+    <div class="topbar-end">
+      <button class="lang-btn" type="button" id="langToggle">한국어 / EN</button>
+      <button class="hamburger" type="button" id="menuBtn" aria-label="메뉴">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#live" class="mobile-link">투어 라이브</a>
+    <a href="#places" class="mobile-link">장소 가이드</a>
+    <a href="#products" class="mobile-link">상품</a>
+    <a href="#booking" class="mobile-link">예약 문의</a>
+  </div>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-text">
+        <p class="eyebrow">파란여행 공식 투어 가이드</p>
+        <h1 class="hero-headline">
+          <span class="h-line" style="--i:0">버스 안에서도,</span>
+          <span class="h-line" style="--i:1">관광지 앞에서도,</span>
+          <span class="h-line coral" style="--i:2">설명을 놓치지 않는 여행.</span>
+        </h1>
+        <p class="hero-body">Paran.ca는 파란여행 고객이 현재 위치, 다음 목적지, 장소별 핵심 설명을 휴대폰으로 바로 확인하는 여행 동행 가이드입니다.</p>
+        <div class="hero-cta">
+          <a href="#live" class="btn-primary">오늘의 투어 보기</a>
+          <a href="#products" class="btn-ghost">상품 둘러보기</a>
+        </div>
+      </div>
+
+      <div class="hero-device" aria-label="모바일 투어 라이브 미리보기">
+        <div class="device-glow"></div>
+        <div class="device-frame">
+          <div class="device-pill"></div>
+          <div class="device-screen" id="heroPhone">
+            <div class="app-topbar">
+              <span class="live-badge"><span class="live-dot"></span>라이브</span>
+              <span class="app-logo-sm">Paran.ca</span>
+            </div>
+            <div class="app-body">
+              <p class="app-label">현재 위치</p>
+              <h2 class="app-current" data-hero-current>워싱턴 D.C.</h2>
+              <div class="app-next-card">
+                <p class="app-next-label">다음 목적지</p>
+                <strong class="app-next-name" data-hero-next>국회의사당</strong>
+                <span class="app-next-time" data-hero-time>이동 12분</span>
+              </div>
+              <ol class="app-timeline" data-mini-timeline></ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-item reveal-stagger">
+        <strong class="stat-num" data-count="145000">0</strong>
+        <span class="stat-label">명+ 여행 완료</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item reveal-stagger">
+        <strong class="stat-num" data-count="18">0</strong>
+        <span class="stat-label">년 운영 경력</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item reveal-stagger">
+        <strong class="stat-num" data-count="100">0</strong>
+        <span class="stat-label">% 출발 보장</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item reveal-stagger">
+        <strong class="stat-num" data-count="49" data-decimal="1">0</strong>
+        <span class="stat-label">/ 5.0 평점</span>
+      </div>
+    </div>
+
+    <!-- TOUR TABS -->
+    <div class="tour-tabs-bar">
+      <div class="tour-tabs" role="tablist">
+        <button class="tour-tab is-active" type="button" role="tab" data-tour="ny-washington">
+          🗽 뉴욕 + 워싱턴 D.C. <span class="badge">주력상품</span>
+        </button>
+        <button class="tour-tab" type="button" role="tab" data-tour="quebec">
+          🏰 퀘벡 2박 3일
+        </button>
+      </div>
+    </div>
+
+    <!-- ROUTE VISUALIZATION -->
+    <section class="route-section">
+      <div class="section-intro reveal">
+        <p class="eyebrow">Tour route</p>
+        <h2 data-route-title>4일 동선 한눈에</h2>
+      </div>
+      <div class="route-scroll">
+        <div class="route-viz" data-route-viz></div>
+      </div>
+    </section>
+
+    <!-- LIVE -->
+    <section class="live-section" id="live">
+      <div class="section-intro reveal">
+        <p class="eyebrow">Tour live</p>
+        <h2>지금 어디에 있나요?</h2>
+        <p class="section-desc">여행 중 고객은 이 화면에서 현재 위치와 다음 목적지를 바로 확인합니다.</p>
+      </div>
+
+      <div class="live-grid">
+        <article class="live-card current-card tilt-card reveal">
+          <div class="card-head">
+            <span class="card-eye">현재 위치</span>
+            <button class="next-btn" type="button" id="simulateNext">다음 장소 →</button>
+          </div>
+          <h3 class="live-place" data-current-place></h3>
+          <p class="live-desc" data-current-summary></p>
+        </article>
+
+        <article class="live-card reveal" style="--delay:.1s">
+          <span class="card-eye">다음 여행지</span>
+          <h3 class="live-place" data-next-place></h3>
+          <p class="live-desc" data-next-summary></p>
+          <div class="move-badge">
+            <strong class="move-time" data-moving-time></strong>
+            <span class="move-label">이동 시간</span>
+          </div>
+        </article>
+
+        <article class="notice-card reveal" style="--delay:.2s">
+          <span class="card-eye notice-eye">가이드 공지</span>
+          <p class="notice-text" data-guide-notice></p>
+        </article>
+      </div>
+
+      <div class="timeline-wrap reveal">
+        <div class="timeline-head">
+          <h3>오늘 전체 일정</h3>
+          <span class="timeline-day" data-tour-day></span>
+        </div>
+        <ol class="timeline" data-main-timeline></ol>
+      </div>
+    </section>
+
+    <!-- PLACES -->
+    <section class="places-section" id="places">
+      <div class="section-intro reveal">
+        <p class="eyebrow">Place guide</p>
+        <h2>장소별 보조 설명</h2>
+        <p class="section-desc">가이드 설명을 못 들었거나 다시 보고 싶을 때 확인하세요.</p>
+      </div>
+      <div class="places-layout reveal" id="placesLayout">
+        <div class="place-list" data-place-list></div>
+        <article class="place-detail" data-place-detail></article>
+      </div>
+      <p class="swipe-hint" aria-hidden="true">← 스와이프로 장소 이동 →</p>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="exp-section">
+      <div class="exp-copy reveal">
+        <p class="eyebrow light">Paran.ca</p>
+        <h2>투어 전·중·후가<br>하나로 이어집니다.</h2>
+        <p>잠재 고객에게는 실제 동선을 미리 체험하게 하고, 여행 중에는 설명 보조를, 여행 후에는 다시 보고 싶은 여정 기록으로 남깁니다.</p>
+      </div>
+      <div class="exp-steps reveal-stagger" id="expSteps">
+        <article class="exp-step">
+          <span class="step-tag">Before</span>
+          <h3>가고 싶은 마음</h3>
+          <p>실제 동선과 경험을 보여줘 "이 여행 꼭 가야겠다"는 마음을 만들어냅니다.</p>
+        </article>
+        <article class="exp-step">
+          <span class="step-tag">During</span>
+          <h3>편리한 동행</h3>
+          <p>현재 위치, 다음 목적지, 가이드 공지를 휴대폰으로 실시간 보조합니다.</p>
+        </article>
+        <article class="exp-step">
+          <span class="step-tag">After</span>
+          <h3>기억의 재방문</h3>
+          <p>방문 장소와 핵심 설명이 남아 후기 작성과 재예약으로 자연스럽게 이어집니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="products-section" id="products">
+      <div class="section-intro reveal">
+        <p class="eyebrow">Tour products</p>
+        <h2>파란여행 대표 상품</h2>
+        <p class="section-desc">예약 전 고객이 실제 여행을 상상할 수 있도록 동선과 경험 중심으로 소개합니다.</p>
+      </div>
+      <div class="product-grid" data-product-grid></div>
+    </section>
+
+    <!-- BOOKING -->
+    <section class="booking-section" id="booking">
+      <div class="booking-copy reveal">
+        <h2>문의와 예약은<br>파란여행 공식 채널로.</h2>
+        <p>강제쇼핑 없는 순수 여행, 18년 운영, 100% 출발 보장. 직접 확인하세요.</p>
+      </div>
+      <div class="booking-action reveal" style="--delay:.15s">
+        <a class="btn-primary btn-lg" href="https://www.parantours.com" target="_blank" rel="noreferrer">파란여행 공식 사이트 →</a>
+        <p class="booking-note">예약 문의: www.parantours.com</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="brand-mark sm">P</div>
+        <span>Paran.ca</span>
+      </div>
+      <p>파란여행 공식 투어 동행 가이드</p>
+      <a href="https://www.parantours.com" target="_blank" rel="noreferrer">parantours.com →</a>
+    </div>
+  </footer>
+
+  <script src="tour-data.js"></script>
+</body>
+</html>
